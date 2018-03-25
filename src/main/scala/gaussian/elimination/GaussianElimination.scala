@@ -5,26 +5,6 @@ import structures.{Epsilon, Matrix, RegularMatrix}
 import scala.annotation.tailrec
 
 object GaussianElimination {
-  /*
-  l = 1;
-  cauta pivot();
-  interschimba linii(); // (dac˘a e cazul)
-  while (l ≤ n − 1) and (|all| > ) do
-  begin
-  (5)+(6)+(7);
-  l = l + 1;
-  cauta pivot();
-  interschimba linii(); // (dac˘a e cazul)
-  end
-  if |all| ≤  then print(’matrice singulara’);
-  else
-  begin
-  rezolva sistem superior triunghiular();
-  // (se folose¸ste metoda substitit¸iei inverse)
-  verifica solutie();
-  end
-
-   */
   def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Solution = {
     def isPivotNotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
       Math.abs(matrix.rows(currentColumn).max) > epsilon.toNegative10
