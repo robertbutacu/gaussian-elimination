@@ -11,14 +11,14 @@ object Main extends App {
 
   val b = List[Double](0.02, 1, 4, 800)
 
-  val solution = GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(4))
+  val solution = GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(3))
 
-  println(solution.matrix.maxByColumn(3))
+  println(solution)
   //println(solution)
-/*  solution.solve() match {
+  solution.solve() match {
     case None => println("No solution")
     case Some(result) => println(result)
-  }*/
+  }
 
   //(0 until matrixTest.N).map(matrixTest.maxByColumn).foreach(println)
 }

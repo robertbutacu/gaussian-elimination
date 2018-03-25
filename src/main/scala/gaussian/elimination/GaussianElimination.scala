@@ -7,16 +7,10 @@ import scala.annotation.tailrec
 object GaussianElimination {
   def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Solution = {
     def isPivotNotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
-      Math.abs(matrix.rows(currentColumn).max) > epsilon.toNegative10
+      Math.abs(matrix.rows(currentColumn - 1).max) > epsilon.toNegative10
 
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Solution = {
-
-
-        //println("start")
-        //println(matrix)
-        //println(b)
-        //println("\n\n")
         //getting coefficients of the division
         val coefficients = for {
           row <- matrix.rows.drop(currentColumn + 1)
@@ -26,28 +20,21 @@ object GaussianElimination {
 
         val transformedMatrix = transformMatrix(currentColumn, matrix, coefficients, epsilon)
 
-        //println("swapped " + transformedMatrix)
-
         val transformedB = transformB(currentColumn, b, coefficients, epsilon)
 
         val nextColumn = currentColumn + 1
 
-      if (nextColumn >= matrix.N - 1 && isPivotNotNull(nextColumn, matrix))
+      if (nextColumn > matrix.N - 1 && isPivotNotNull(nextColumn, matrix))
         Solution(matrix, b, currentColumn, epsilon)
       else {
         val pivot = transformedMatrix.maxByColumn(nextColumn)
 
-        println("for ")
-        println(transformedMatrix)
-        println("chose pivot index " + pivot + " starting from " + nextColumn)
         val pivotFirstMatrix = transformedMatrix.swapRows(nextColumn, pivot)
         val pivotFirstB = swapElements(transformedB, nextColumn, pivot)
 
-        println("finish")
-        println(pivotFirstMatrix)
-        println(pivotFirstB)
-        println("\n\n")
-        gaussianElimination(nextColumn, pivotFirstMatrix, pivotFirstB)
+        if(nextColumn == matrix.N - 1)
+          Solution(pivotFirstMatrix, pivotFirstB, nextColumn, epsilon)
+        else gaussianElimination(nextColumn, pivotFirstMatrix, pivotFirstB)
       }
     }
 
