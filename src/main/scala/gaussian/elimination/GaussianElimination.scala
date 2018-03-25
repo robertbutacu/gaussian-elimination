@@ -2,6 +2,8 @@ package gaussian.elimination
 
 import structures.{Epsilon, Matrix}
 
+import scala.annotation.tailrec
+
 object GaussianElimination {
 /*
 l = 1;
@@ -27,7 +29,17 @@ end
     None
   }
 
-  def startAlgorithm[A: Numeric](matrix: Matrix[A], epsilon: Epsilon): Unit = {
+  def startAlgorithm[A: Numeric](matrix: Matrix[A], b: List[A], epsilon: Epsilon): Unit = {
+    //@tailrec
+    def go(currentColumn: Int, matrix: Matrix[A], b: List[A]) = {
+      List.empty
+    }
+  }
 
+  private def swapElements[A: Numeric](list: List[A], first: Int, second: Int): List[A] = {
+    def inBoundaries(i: Int): Boolean = i >= 0 && i < list.length
+    require(inBoundaries(first) && inBoundaries(second))
+
+    list.updated(first, list(second)).updated(second, list(first))
   }
 }
