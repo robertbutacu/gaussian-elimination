@@ -30,13 +30,22 @@ end
   }
 
   def startAlgorithm[A: Numeric](matrix: Matrix[A], b: List[A], epsilon: Epsilon): Unit = {
-    //@tailrec
-    def go(currentColumn: Int, matrix: Matrix[A], b: List[A]) = {
-      List.empty
+    @tailrec
+    def gaussianElimination(currentColumn: Int, matrix: Matrix[A], b: List[A]): Matrix[A] = {
+      if(currentColumn == matrix.rowLength - 1)
+        matrix
+      else {
+        val pivot = matrix.maxByColumn(currentColumn)
+        val pivotFirstMatrix = matrix.swapRows(0, pivot)
+        val pivotFirstB = swapElements(b, 0, pivot)
+        gaussianElimination(currentColumn + 1, pivotFirstMatrix, pivotFirstB)
+      }
     }
+
+    val finalMatrix = gaussianElimination(0, matrix, b)
   }
 
-  private def swapElements[A: Numeric](list: List[A], first: Int, second: Int): List[A] = {
+  def swapElements[A: Numeric](list: List[A], first: Int, second: Int): List[A] = {
     def inBoundaries(i: Int): Boolean = i >= 0 && i < list.length
     require(inBoundaries(first) && inBoundaries(second))
 
