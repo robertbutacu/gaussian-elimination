@@ -34,16 +34,19 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
     require(RegularMatrix.isInBoundaries(first, N)
       && RegularMatrix.isInBoundaries(second, N))
 
-    RegularMatrix(
-      this.rows.slice(0, first)
-        ::: List(this.rows(second))
-        ::: this.rows.slice(first + 1, second)
-        ::: List(this.rows(first))
-        ::: this.rows.slice(second + 1, this.N))
+    if (first == second)
+      this
+    else
+      RegularMatrix(
+        this.rows.slice(0, first)
+          ::: List(this.rows(second))
+          ::: this.rows.slice(first + 1, second)
+          ::: List(this.rows(first))
+          ::: this.rows.slice(second + 1, this.N))
   }
 
   override def maxByColumn(columnIndex: Int): Int =
-    this.rows.zipWithIndex.maxBy{column =>
+    this.rows.zipWithIndex.maxBy { column =>
       val n = implicitly[Numeric[A]]
       n.abs(column._1(columnIndex))
     }._2
