@@ -30,14 +30,19 @@ end
   }
 
   def startAlgorithm[A: Numeric](matrix: Matrix[A], b: List[A], epsilon: Epsilon): Unit = {
+    val ordering = implicitly[Numeric[A]]
+
+    def isPivotNull(currentColumn: Int, matrix: Matrix[A]): Boolean =
+      ordering.toDouble(ordering.abs(matrix(0)(currentColumn))) < epsilon.value
+
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[A], b: List[A]): Matrix[A] = {
-      if(currentColumn == matrix.rowLength - 1)
+      if(currentColumn == matrix.rowLength - 1 || isPivotNull(currentColumn, matrix))
         matrix
       else {
         val pivot = matrix.maxByColumn(currentColumn)
-        val pivotFirstMatrix = matrix.swapRows(0, pivot)
-        val pivotFirstB = swapElements(b, 0, pivot)
+        val pivotFirstMatrix = matrix.swapRows(currentColumn, pivot)
+        val pivotFirstB = swapElements(b, currentColumn, pivot)
         gaussianElimination(currentColumn + 1, pivotFirstMatrix, pivotFirstB)
       }
     }
