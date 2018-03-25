@@ -25,15 +25,15 @@ object GaussianElimination {
   end
 
    */
-  def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Matrix[Double] = {
+  def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Solution = {
 
     def isPivotNotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
-      Math.abs(matrix.rows(currentColumn).max) > Math.pow(10, - epsilon.precision)
+      Math.abs(matrix.rows(currentColumn).max) > epsilon.toNegative10
 
     @tailrec
-    def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Matrix[Double] = {
+    def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Solution = {
       if (currentColumn == matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
-        matrix
+        Solution(matrix, currentColumn, epsilon)
       else {
         //getting coefficients of the division
         val coefficients = for {
@@ -97,6 +97,6 @@ object GaussianElimination {
   }
 
   private def truncate(a: Double, epsilon: Epsilon): Double = {
-    Math.floor(a * epsilon.value) / epsilon.value
+    Math.floor(a * epsilon.decimalsPower) / epsilon.decimalsPower
   }
 }
