@@ -27,14 +27,19 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
 
   override def map[B](f: A => B)(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(_.map(f)))(n)
 
-  override def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(f))(n)
+  override def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): RegularMatrix[B] =
+    RegularMatrix(this.rows.map(f))(n)
 
   override def swapRows(first: Int, second: Int): Matrix[A] = {
     require(RegularMatrix.isInBoundaries(first, N)
       && RegularMatrix.isInBoundaries(second, N))
 
-    RegularMatrix(this.rows.slice(0, first) ::: List(this.rows(second)) ::: this.rows.slice(first + 1, second) ::: List(this.rows(first)) :::
-    this.rows.slice(second + 1, this.N))
+    RegularMatrix(
+      this.rows.slice(0, first)
+        ::: List(this.rows(second))
+        ::: this.rows.slice(first + 1, second)
+        ::: List(this.rows(first))
+        ::: this.rows.slice(second + 1, this.N))
   }
 }
 
