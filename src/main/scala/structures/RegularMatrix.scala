@@ -44,7 +44,6 @@ case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
           ::: List(this.rows(first))
           ::: this.rows.slice(second + 1, this.N))
     }
-
   }
 
   override def maxByColumn(columnIndex: Int): Int =

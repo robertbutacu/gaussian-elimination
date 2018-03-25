@@ -1,6 +1,5 @@
 import gaussian.elimination.GaussianElimination
 import structures.{Epsilon, RegularMatrix}
-import scala.Fractional.Implicits._
 
 object Main extends App {
   val matrixTest = RegularMatrix[Double](List(

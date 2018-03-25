@@ -31,7 +31,7 @@ object GaussianElimination {
 
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Solution = {
-      if (currentColumn == matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
+      if (currentColumn >= matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
         Solution(matrix, b, currentColumn, epsilon)
       else {
         //getting coefficients of the division
@@ -52,6 +52,7 @@ object GaussianElimination {
         gaussianElimination(currentColumn + 1, pivotFirstMatrix, pivotFirstB)
       }
     }
+
     val pivot = matrix.maxByColumn(0)
     val pivotFirstMatrix = matrix.swapRows(0, pivot)
     val pivotFirstB = swapElements(b, 0, pivot)
@@ -60,20 +61,18 @@ object GaussianElimination {
   }
 
   private def transformB(currentColumn: Int,
-                                     b: List[Double],
-                                     coefficients: List[Double],
-                                     epsilon: Epsilon): List[Double] = {
-    val result = b.slice(0, currentColumn + 1) :::
+                         b: List[Double],
+                         coefficients: List[Double],
+                         epsilon: Epsilon): List[Double] =
+    b.slice(0, currentColumn + 1) :::
       b.slice(currentColumn + 1, b.length)
         .zip(coefficients)
-        .map(p => truncate(p._1 - ( p._1 * p._2), epsilon))
-    result
-  }
+        .map(p => truncate(p._1 - (b(currentColumn) * p._2), epsilon))
 
   private def transformMatrix(currentColumn: Int,
-                                          matrix: Matrix[Double],
-                                          coefficients: List[Double],
-                                          epsilon: Epsilon): Matrix[Double] = {
+                              matrix: Matrix[Double],
+                              coefficients: List[Double],
+                              epsilon: Epsilon): Matrix[Double] = {
     //rows from which matrix's rows will be subtracted from
     val rowsForSubtraction = coefficients.map(c => matrix.rows(currentColumn).map(_ * c))
 
@@ -93,7 +92,8 @@ object GaussianElimination {
 
     require(inBoundaries(first) && inBoundaries(second))
 
-    list.updated(first, list(second)).updated(second, list(first))
+    if(first < second) list.updated(first, list(second)).updated(second, list(first))
+    else list
   }
 
   private def truncate(a: Double, epsilon: Epsilon): Double = {
