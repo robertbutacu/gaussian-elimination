@@ -25,23 +25,19 @@ object GaussianElimination {
   end
 
    */
-  def searchForPivot[A: Fractional](l: Int, tensor: Matrix[A]): Option[Int] = {
-    None
-  }
-
   def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Matrix[Double] = {
 
-    def isPivotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
-      Math.abs(matrix.rows(currentColumn)(currentColumn)) < epsilon.value
+    def isPivotNotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
+      Math.abs(matrix.rows(currentColumn).max) > Math.pow(10, - epsilon.precision)
 
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Matrix[Double] = {
-      if (currentColumn == matrix.rowLength - 1 || isPivotNull(currentColumn, matrix))
+      if (currentColumn == matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
         matrix
       else {
         //getting coefficients of the division
         val coefficients = for {
-          row <- matrix.rows.drop(currentColumn)
+          row <- matrix.rows.drop(currentColumn + 1)
           currentRow = matrix.rows(currentColumn)
           coefficient = row(currentColumn) / currentRow(currentColumn)
         } yield coefficient
@@ -53,11 +49,15 @@ object GaussianElimination {
         val pivot = transformedMatrix.maxByColumn(currentColumn)
         val pivotFirstMatrix = transformedMatrix.swapRows(currentColumn, pivot)
         val pivotFirstB = swapElements(transformedB, currentColumn, pivot)
+
         gaussianElimination(currentColumn + 1, pivotFirstMatrix, pivotFirstB)
       }
     }
+    val pivot = matrix.maxByColumn(0)
+    val pivotFirstMatrix = matrix.swapRows(0, pivot)
+    val pivotFirstB = swapElements(b, 0, pivot)
 
-    gaussianElimination(0, matrix, b)
+    gaussianElimination(0, pivotFirstMatrix, pivotFirstB)
   }
 
   private def transformB(currentColumn: Int,

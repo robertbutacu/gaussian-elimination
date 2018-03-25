@@ -34,19 +34,21 @@ case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
     require(RegularMatrix.isInBoundaries(first, N)
       && RegularMatrix.isInBoundaries(second, N))
 
-    if (first == second)
+    if (first == second || first > second)
       this
-    else
+    else {
       RegularMatrix(
         this.rows.slice(0, first)
           ::: List(this.rows(second))
           ::: this.rows.slice(first + 1, second)
           ::: List(this.rows(first))
           ::: this.rows.slice(second + 1, this.N))
+    }
+
   }
 
   override def maxByColumn(columnIndex: Int): Int =
-    this.rows.slice(columnIndex + 1, this.N).zipWithIndex.maxBy { column =>
+    this.rows.slice(columnIndex, this.N).zipWithIndex.maxBy { column =>
       val n = implicitly[Numeric[A]]
       n.abs(column._1(columnIndex))
     }._2
