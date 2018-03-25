@@ -13,6 +13,7 @@ object Main extends App {
 
   val solution = GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(4))
 
+  println(solution.matrix.maxByColumn(3))
   //println(solution)
 /*  solution.solve() match {
     case None => println("No solution")

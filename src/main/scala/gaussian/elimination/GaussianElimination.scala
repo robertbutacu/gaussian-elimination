@@ -11,9 +11,7 @@ object GaussianElimination {
 
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Solution = {
-      if (currentColumn >= matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
-        Solution(matrix, b, currentColumn, epsilon)
-      else {
+
 
         //println("start")
         //println(matrix)
@@ -33,6 +31,10 @@ object GaussianElimination {
         val transformedB = transformB(currentColumn, b, coefficients, epsilon)
 
         val nextColumn = currentColumn + 1
+
+      if (nextColumn >= matrix.N - 1 && isPivotNotNull(nextColumn, matrix))
+        Solution(matrix, b, currentColumn, epsilon)
+      else {
         val pivot = transformedMatrix.maxByColumn(nextColumn)
 
         println("for ")

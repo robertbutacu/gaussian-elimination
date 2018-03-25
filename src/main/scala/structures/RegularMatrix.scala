@@ -47,6 +47,7 @@ case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
   }
 
   override def maxByColumn(columnIndex: Int): Int = {
+    println("COLUMN INDEX" + columnIndex)
     this.rows.zipWithIndex.slice(columnIndex, this.N).maxBy { column =>
       val n = implicitly[Numeric[A]]
       n.abs(column._1(columnIndex))
