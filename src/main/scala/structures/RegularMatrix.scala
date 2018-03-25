@@ -1,6 +1,6 @@
 package structures
 
-case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
+case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
   require(this.rows.forall(_.length == this.rows.maxBy(_.length).length))
 
   override def rowLength: Int = this.rows.head.length
@@ -9,13 +9,13 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
 
   override def M: Int = this.rowLength
 
-  override def +++(other: Matrix[A])(implicit n: Numeric[A]): Matrix[A] = {
+  override def +++(other: Matrix[A])(implicit n: Fractional[A]): Matrix[A] = {
     require(this.rowLength == other.rowLength)
 
     applyOperation(other, n.plus)
   }
 
-  override def ---(other: Matrix[A])(implicit n: Numeric[A]): Matrix[A] = {
+  override def ---(other: Matrix[A])(implicit n: Fractional[A]): Matrix[A] = {
     require(this.rowLength == other.rowLength)
 
     applyOperation(other, n.minus)
@@ -25,9 +25,9 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
     RegularMatrix[A](this.rows, other, f)
   }
 
-  override def map[B](f: A => B)(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(_.map(f)))(n)
+  override def map[B](f: A => B)(implicit n: Fractional[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(_.map(f)))(n)
 
-  override def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): RegularMatrix[B] =
+  override def mapRows[B](f: List[A] => List[B])(implicit n: Fractional[B]): RegularMatrix[B] =
     RegularMatrix(this.rows.map(f))(n)
 
   override def swapRows(first: Int, second: Int): Matrix[A] = {
@@ -55,7 +55,7 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
 object RegularMatrix {
   def apply[A](rows: List[List[A]],
                other: Matrix[A],
-               f: (A, A) => A)(implicit n: Numeric[A]): RegularMatrix[A] =
+               f: (A, A) => A)(implicit n: Fractional[A]): RegularMatrix[A] =
     new RegularMatrix(rows
       .zip(other.rows)
       .map {

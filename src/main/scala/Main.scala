@@ -1,10 +1,15 @@
-import structures.RegularMatrix
-
+import gaussian.elimination.GaussianElimination
+import structures.{Epsilon, RegularMatrix}
+import scala.Fractional.Implicits._
 
 object Main extends App {
-  val matrix = RegularMatrix((1 to 9).map(i => List.fill(9)(i)).toList)
+  val matrixTest = RegularMatrix[Double](List(
+    List[Double](25, 5, 1),
+    List[Double](64, 8, 1),
+    List[Double](144, 12, 1)
+  ))
 
-  val matrix2 = RegularMatrix((1 to 9).map(i => (1 to 9).toList).toList)
+  val b = List[Double](106.7, 177.2, 279.2)
 
-  println(matrix.swapRows(0, 0).swapRows(0, 0).swapRows(0, 0))
+  println(GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(2)))
 }
