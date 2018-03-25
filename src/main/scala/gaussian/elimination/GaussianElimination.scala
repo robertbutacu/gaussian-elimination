@@ -48,13 +48,17 @@ object GaussianElimination {
         } yield coefficient
 
         //rows from which matrix's rows will be subtracted from
-        val rowsForSubtraction = coefficients.map(c => matrix.rows(currentColumn).map(n.times(_ , c)))
+        val rowsForSubtraction = coefficients.map(c => matrix.rows(currentColumn).map(n.times(_, c)))
 
-        val transformedMatrix = RegularMatrix(matrix.rows.slice(0, currentColumn + 1) :::
-        matrix.rows.slice(currentColumn + 1, matrix.N).zip(rowsForSubtraction).map{
-          pair =>
-            pair._1.zip(pair._2).map(p => truncate(n.minus(p._1, p._2), epsilon))
-        })
+        val transformedMatrix = RegularMatrix(
+          matrix.rows.slice(0, currentColumn + 1)//first slice which remains unchanged
+            //zipping with rows which will be subtracted from one another
+            //TODO maybe beautiful version ?
+            ::: matrix.rows.slice(currentColumn + 1, matrix.N).zip(rowsForSubtraction).map {
+            pair =>
+              //zipping elements of the rows
+              pair._1.zip(pair._2).map(p => truncate(n.minus(p._1, p._2), epsilon))
+          })
 
         val pivot = transformedMatrix.maxByColumn(currentColumn)
         val pivotFirstMatrix = transformedMatrix.swapRows(currentColumn, pivot)
