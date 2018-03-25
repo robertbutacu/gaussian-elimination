@@ -14,6 +14,11 @@ object GaussianElimination {
       if (currentColumn >= matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
         Solution(matrix, b, currentColumn, epsilon)
       else {
+
+        //println("start")
+        //println(matrix)
+        //println(b)
+        //println("\n\n")
         //getting coefficients of the division
         val coefficients = for {
           row <- matrix.rows.drop(currentColumn + 1)
@@ -23,13 +28,24 @@ object GaussianElimination {
 
         val transformedMatrix = transformMatrix(currentColumn, matrix, coefficients, epsilon)
 
+        //println("swapped " + transformedMatrix)
+
         val transformedB = transformB(currentColumn, b, coefficients, epsilon)
 
-        val pivot = transformedMatrix.maxByColumn(currentColumn)
-        val pivotFirstMatrix = transformedMatrix.swapRows(currentColumn, pivot)
-        val pivotFirstB = swapElements(transformedB, currentColumn, pivot)
+        val nextColumn = currentColumn + 1
+        val pivot = transformedMatrix.maxByColumn(nextColumn)
 
-        gaussianElimination(currentColumn + 1, pivotFirstMatrix, pivotFirstB)
+        println("for ")
+        println(transformedMatrix)
+        println("chose pivot index " + pivot + " starting from " + nextColumn)
+        val pivotFirstMatrix = transformedMatrix.swapRows(nextColumn, pivot)
+        val pivotFirstB = swapElements(transformedB, nextColumn, pivot)
+
+        println("finish")
+        println(pivotFirstMatrix)
+        println(pivotFirstB)
+        println("\n\n")
+        gaussianElimination(nextColumn, pivotFirstMatrix, pivotFirstB)
       }
     }
 
