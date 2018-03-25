@@ -5,6 +5,10 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
 
   override def rowLength: Int = this.rows.head.length
 
+  override def N: Int = this.rows.length
+
+  override def M: Int = this.rowLength
+
   override def +++(other: Matrix[A])(implicit n: Numeric[A]): Matrix[A] = {
     require(this.rowLength == other.rowLength)
 
@@ -24,6 +28,13 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
   override def map[B](f: A => B)(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(_.map(f)))(n)
 
   override def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(f))(n)
+
+  override def swapRows(first: Int, second: Int): Matrix[A] = {
+    require(RegularMatrix.isInBoundaries(first, N)
+      && RegularMatrix.isInBoundaries(second, N))
+
+    this
+  }
 }
 
 object RegularMatrix {
@@ -38,4 +49,8 @@ object RegularMatrix {
             .map(v => f(v._1, v._2))
       }
     )(n)
+
+  def isInBoundaries(row: Int, rowLength: Int): Boolean = {
+    row >= 0 && row < rowLength
+  }
 }
