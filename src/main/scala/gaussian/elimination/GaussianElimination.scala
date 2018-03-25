@@ -47,27 +47,49 @@ object GaussianElimination {
           coefficient = n.div(row(currentColumn), currentRow(currentColumn))
         } yield coefficient
 
-        //rows from which matrix's rows will be subtracted from
-        val rowsForSubtraction = coefficients.map(c => matrix.rows(currentColumn).map(n.times(_, c)))
+        val transformedMatrix = transformMatrix(currentColumn, matrix, coefficients, epsilon)
 
-        val transformedMatrix = RegularMatrix(
-          matrix.rows.slice(0, currentColumn + 1)//first slice which remains unchanged
-            //zipping with rows which will be subtracted from one another
-            //TODO maybe beautiful version ?
-            ::: matrix.rows.slice(currentColumn + 1, matrix.N).zip(rowsForSubtraction).map {
-            pair =>
-              //zipping elements of the rows
-              pair._1.zip(pair._2).map(p => truncate(n.minus(p._1, p._2), epsilon))
-          })
+        val transformedB = transformB(currentColumn, b, coefficients, epsilon)
 
         val pivot = transformedMatrix.maxByColumn(currentColumn)
         val pivotFirstMatrix = transformedMatrix.swapRows(currentColumn, pivot)
-        val pivotFirstB = swapElements(b, currentColumn, pivot)
+        val pivotFirstB = swapElements(transformedB, currentColumn, pivot)
         gaussianElimination(currentColumn + 1, pivotFirstMatrix, pivotFirstB)
       }
     }
 
     val finalMatrix = gaussianElimination(0, matrix, b)
+  }
+
+  private def transformB[A: Numeric](currentColumn: Int,
+                                     b: List[A],
+                                     coefficients: List[A],
+                                     epsilon: Epsilon): List[A] = {
+    val n = implicitly[Numeric[A]]
+    b.slice(0, currentColumn + 1) :::
+      b.slice(currentColumn + 1, b.length)
+        .zip(coefficients)
+        .map(p => truncate(n.minus(p._1, p._2), epsilon))
+  }
+
+  private def transformMatrix[A: Numeric](currentColumn: Int,
+                                          matrix: Matrix[A],
+                                          coefficients: List[A],
+                                          epsilon: Epsilon): Matrix[A] = {
+    val n = implicitly[Fractional[A]]
+
+    //rows from which matrix's rows will be subtracted from
+    val rowsForSubtraction = coefficients.map(c => matrix.rows(currentColumn).map(n.times(_, c)))
+
+    RegularMatrix(
+      matrix.rows.slice(0, currentColumn + 1) //first slice which remains unchanged
+        //zipping with rows which will be subtracted from one another
+        //TODO maybe beautiful version ?
+        ::: matrix.rows.slice(currentColumn + 1, matrix.N).zip(rowsForSubtraction).map {
+        pair =>
+          //zipping elements of the rows
+          pair._1.zip(pair._2).map(p => truncate(n.minus(p._1, p._2), epsilon))
+      })
   }
 
   private def swapElements[A: Numeric](list: List[A], first: Int, second: Int): List[A] = {

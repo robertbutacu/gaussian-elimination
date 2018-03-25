@@ -46,7 +46,7 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
   }
 
   override def maxByColumn(columnIndex: Int): Int =
-    this.rows.slice(columnIndex, this.N).zipWithIndex.maxBy { column =>
+    this.rows.slice(columnIndex + 1, this.N).zipWithIndex.maxBy { column =>
       val n = implicitly[Numeric[A]]
       n.abs(column._1(columnIndex))
     }._2
