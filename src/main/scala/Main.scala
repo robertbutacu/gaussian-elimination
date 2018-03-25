@@ -3,12 +3,13 @@ import structures.{Epsilon, RegularMatrix}
 
 object Main extends App {
   val matrixTest = RegularMatrix[Double](List(
-    List[Double](25, 5, 1),
-    List[Double](64, 8, 1),
-    List[Double](144, 12, 1)
+    List[Double](0.02, 0.01, 0, 0),
+    List[Double](1, 2, 1, 0),
+    List[Double](0, 1, 2, 1),
+    List[Double](0, 0, 100, 200)
   ))
 
-  val b = List[Double](106.7, 177.2, 279.2)
+  val b = List[Double](0.02, 1, 4, 800)
 
   val solution = GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(4))
 
