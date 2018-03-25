@@ -51,6 +51,38 @@ case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
       val n = implicitly[Numeric[A]]
       n.abs(column._1(columnIndex))
     }._2
+
+  override def ***(other: Matrix[A]): Matrix[A] = {
+    type ValueWithIndex = (A, Int)
+    val m = implicitly[Fractional[A]]
+
+    def updateSum(sumSoFar: A, currElement: ValueWithIndex, currIndex: Int): A =
+      m.plus(sumSoFar, m.times(currElement._1, other.rows(currElement._2)(currIndex)))
+
+    def splitIntoRows(values: List[A], rowLength: Int): List[List[A]] = {
+      require(values.length % rowLength == 0)
+
+      if (values.isEmpty)
+        List.empty
+      else
+        values.slice(0, rowLength) :: splitIntoRows(values.drop(rowLength), rowLength)
+    }
+
+    def computeUpdatedValueForCurrentPosition(l: List[(A, Int)], currIndex: Int) =
+      l.foldRight(m.zero) {
+        (curr, acc) =>
+          updateSum(acc, curr, currIndex)
+      }
+
+    val productStream: List[A] = for {
+      row <- this.rows
+      currIndex <- row.indices.toList
+      elementsWithIndex = row.zipWithIndex
+      valueForCurrentPosition = computeUpdatedValueForCurrentPosition(elementsWithIndex, currIndex)
+    } yield valueForCurrentPosition
+
+    new RegularMatrix[A](splitIntoRows(productStream, this.rows.head.length))(m)
+  }
 }
 
 object RegularMatrix {

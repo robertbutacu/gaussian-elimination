@@ -8,6 +8,7 @@ trait Matrix[A] {
 
   def +++(other: Matrix[A])(implicit n: Fractional[A]): Matrix[A]
   def ---(other: Matrix[A])(implicit n: Fractional[A]): Matrix[A]
+  def ***(other: Matrix[A]): Matrix[A]
 
   def map[B](f: A => B)(implicit n: Fractional[B]): Matrix[B]
   def mapRows[B](f: List[A] => List[B])(implicit n: Fractional[B]): Matrix[B]

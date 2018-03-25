@@ -10,5 +10,11 @@ object Main extends App {
 
   val b = List[Double](106.7, 177.2, 279.2)
 
-  println(GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(2)))
+  val solution = GaussianElimination.startAlgorithm(matrixTest, b, Epsilon(4))
+
+  println(solution)
+  solution.solve() match {
+    case None => println("No solution")
+    case Some(result) => println(result)
+  }
 }
