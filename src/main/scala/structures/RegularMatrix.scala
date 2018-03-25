@@ -1,4 +1,4 @@
-package first.lab.structures
+package structures
 
 case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
   require(this.rows.forall(_.length == this.rows.maxBy(_.length).length))
@@ -41,6 +41,8 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
         ::: List(this.rows(first))
         ::: this.rows.slice(second + 1, this.N))
   }
+
+  override def maxByColumn(columnIndex: Int): Int = this.rows.zipWithIndex.maxBy{column => column._1(columnIndex)}._2
 }
 
 object RegularMatrix {

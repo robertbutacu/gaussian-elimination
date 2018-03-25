@@ -1,7 +1,6 @@
 package gaussian.elimination
 
-import org.nd4j.linalg.api.ndarray.INDArray
-import org.nd4j.linalg.factory.Nd4j
+import structures.{Epsilon, Matrix}
 
 object GaussianElimination {
 /*
@@ -24,18 +23,11 @@ verifica solutie();
 end
 
  */
-  def searchForPivot(l: Int, tensor: INDArray): Option[Int] = {
+  def searchForPivot[A: Numeric](l: Int, tensor: Matrix[A]): Option[Int] = {
     None
   }
 
-  def interchangeRows(first: Int, second: Int, tensor: INDArray): INDArray = {
-    Nd4j.zeros(1)
-  }
+  def startAlgorithm[A: Numeric](matrix: Matrix[A], epsilon: Epsilon): Unit = {
 
-  def startAlgorithm(tensor: INDArray): Unit = {
-    def go(row: Int, tensor: INDArray): Unit = {
-      val nextRow = row + 1
-      val pivot = searchForPivot(row, tensor)
-    }
   }
 }

@@ -1,4 +1,4 @@
-package first.lab.structures
+package structures
 
 trait Matrix[A] {
   def rows: List[List[A]]
@@ -13,4 +13,5 @@ trait Matrix[A] {
   def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): Matrix[B]
 
   def swapRows(first: Int, second: Int): Matrix[A]
+  def maxByColumn(columnIndex: Int): Int
 }
