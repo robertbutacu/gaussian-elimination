@@ -48,16 +48,8 @@ case class Solution(matrix: Matrix[Double], b: List[Double], lastPivot: Int, eps
       val coefficient = curr._1.head
       val restOfEquation = curr._1.tail
       val leftSideSum = restOfEquation.zip(acc).foldRight(0.0){(curr, acc) =>
-        println(curr._1 + "*" + curr._2)
         acc + curr._1 * curr._2
       }
-
-      println("result " + result)
-      println("coefficient " + coefficient)
-      println("rest " + curr._1.tail)
-      println("left side sum " + leftSideSum)
-      println("result " + epsilon.truncate((result - leftSideSum) / coefficient))
-      println("\n\n")
 
       epsilon.truncate((result - leftSideSum) / coefficient) +: acc
     }
