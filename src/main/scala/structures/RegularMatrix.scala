@@ -33,7 +33,8 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
     require(RegularMatrix.isInBoundaries(first, N)
       && RegularMatrix.isInBoundaries(second, N))
 
-    this
+    RegularMatrix(this.rows.slice(0, first) ::: List(this.rows(second)) ::: this.rows.slice(first + 1, second) ::: List(this.rows(first)) :::
+    this.rows.slice(second + 1, this.N))
   }
 }
 
