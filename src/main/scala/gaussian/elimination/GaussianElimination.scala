@@ -26,14 +26,13 @@ object GaussianElimination {
 
    */
   def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Solution = {
-
     def isPivotNotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
       Math.abs(matrix.rows(currentColumn).max) > epsilon.toNegative10
 
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Solution = {
       if (currentColumn == matrix.rowLength - 1 && isPivotNotNull(currentColumn, matrix))
-        Solution(matrix, currentColumn, epsilon)
+        Solution(matrix, b, currentColumn, epsilon)
       else {
         //getting coefficients of the division
         val coefficients = for {
@@ -42,9 +41,11 @@ object GaussianElimination {
           coefficient = row(currentColumn) / currentRow(currentColumn)
         } yield coefficient
 
-        val transformedMatrix = transformMatrix(currentColumn, matrix, coefficients, epsilon)
+        val trimmedCoefficients = epsilon.apply(coefficients)
 
-        val transformedB = transformB(currentColumn, b, coefficients, epsilon)
+        val transformedMatrix = transformMatrix(currentColumn, matrix, trimmedCoefficients, epsilon)
+
+        val transformedB = transformB(currentColumn, b, trimmedCoefficients, epsilon)
 
         val pivot = transformedMatrix.maxByColumn(currentColumn)
         val pivotFirstMatrix = transformedMatrix.swapRows(currentColumn, pivot)
@@ -64,10 +65,16 @@ object GaussianElimination {
                                      b: List[Double],
                                      coefficients: List[Double],
                                      epsilon: Epsilon): List[Double] = {
-    b.slice(0, currentColumn + 1) :::
+    println("before")
+    println(b)
+    println(coefficients)
+    val result = b.slice(0, currentColumn + 1) :::
       b.slice(currentColumn + 1, b.length)
         .zip(coefficients)
-        .map(p => truncate(p._1 - p._2, epsilon))
+        .map(p => truncate(p._1 - ( p._1 * p._2), epsilon))
+    println("after")
+    println(result)
+    result
   }
 
   private def transformMatrix(currentColumn: Int,
