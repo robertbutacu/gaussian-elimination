@@ -12,7 +12,7 @@ case class Solution(matrix: Matrix[Double], b: List[Double], lastPivot: Int, eps
 
   def solve(): Option[List[Double]] = {
     isSingular match {
-      case Singular => None
+      case Singular => Some(solveSystem())
       case NotSingular => Some(solveSystem())
     }
   }
@@ -32,8 +32,6 @@ case class Solution(matrix: Matrix[Double], b: List[Double], lastPivot: Int, eps
       1 2 3 4 5
      */
 
-    val reversedMatrix = matrix.rows.reverse.map(_.reverse)
-
     /*
       1
       1 2
@@ -41,7 +39,7 @@ case class Solution(matrix: Matrix[Double], b: List[Double], lastPivot: Int, eps
       1 2 3 4
       1 2 3 4 5
      */
-    val removedZeroes = reversedMatrix.map(row => row.dropWhile(_ == 0.0))
+    val removedZeroes = matrix.rows.map(r => r.dropWhile(_ == 0.0)).reverse
 
     val zippedWithB = removedZeroes.zip(b.reverse)
 

@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 object GaussianElimination {
   def startAlgorithm(matrix: Matrix[Double], b: List[Double], epsilon: Epsilon): Solution = {
     def isPivotNotNull(currentColumn: Int, matrix: Matrix[Double]): Boolean =
-      Math.abs(matrix.rows(currentColumn - 1).max) > epsilon.toNegative10
+      Math.abs(matrix.rows(currentColumn).max) > epsilon.toNegative10
 
     @tailrec
     def gaussianElimination(currentColumn: Int, matrix: Matrix[Double], b: List[Double]): Solution = {
